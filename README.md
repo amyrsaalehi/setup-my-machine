@@ -602,6 +602,7 @@ npx skills add https://github.com/juliusbrussee/caveman --skill caveman-commit
 npx skills add https://github.com/anthropics/skills --skill doc-coauthoring
 npx skills add https://github.com/anthropics/skills --skill frontend-design
 npx skills add https://github.com/vercel-labs/agent-skills --skill web-design-guidelines
+npx skills add https://github.com/mattpocock/skills --skill improve-codebase-architecture
 ```
 
 Browse more at [skills.sh](https://skills.sh).
