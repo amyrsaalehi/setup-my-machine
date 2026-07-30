@@ -9,16 +9,17 @@ Works on Apple Silicon (M-series) and Intel Macs. Commands assume **zsh** (macOS
 ## What you get
 
 
-| Category          | Tools                                     |
-| ----------------- | ----------------------------------------- |
-| Security & access | Bitwarden, Shadowrocket, GitHub           |
-| Apple dev base    | Xcode, Command Line Tools                 |
-| Package manager   | Homebrew                                  |
-| Shell             | zsh, Oh My Zsh, Powerlevel10k, fzf, fd    |
-| Languages         | Node (nvm), Bun, Python (pyenv), Go, Rust |
-| Containers        | Colima + Docker CLI                       |
-| DevOps CLI        | git, GitHub CLI, kubectl, Terraform       |
-| GUI apps          | Cursor, Chrome, Postman                   |
+| Category          | Tools                                              |
+| ----------------- | -------------------------------------------------- |
+| Security & access | Bitwarden, Shadowrocket, GitHub                    |
+| Apple dev base    | Xcode, Command Line Tools                          |
+| Package manager   | Homebrew                                           |
+| Shell             | zsh, Oh My Zsh, Powerlevel10k, fzf, fd             |
+| Languages         | Node (nvm), Bun, Python (pyenv), Go, Rust          |
+| Containers        | Colima + Docker CLI                                |
+| DevOps CLI        | git, GitHub CLI, kubectl, Terraform                |
+| GUI apps          | Cursor, Chrome, Postman                            |
+| AI code intel     | CodeGraph (local MCP knowledge graph for agents)   |
 
 
 ---
@@ -611,6 +612,98 @@ Browse more at [skills.sh](https://skills.sh).
 
 
 
+## Phase 10 — CodeGraph (optional)
+
+[CodeGraph](https://github.com/colbymchenry/codegraph) is a local-first code knowledge graph that wires into Cursor (and other agents) over MCP. Index stays on your machine; agents use the graph instead of grepping the whole repo on every question.
+
+Requires Cursor (Phase 4). The standalone installer bundles its own runtime — Node is not required.
+
+### Step 10.1 — Install the CLI
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/colbymchenry/codegraph/main/install.sh | sh
+```
+
+The installer puts `codegraph` in `~/.local/bin`. Open a **new terminal** (or `source ~/.zshrc`) so the command resolves.
+
+If `~/.local/bin` is not on your PATH, add this to `~/.zshrc`:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+**Already have Node?** You can use npm instead:
+
+```bash
+npm i -g @colbymchenry/codegraph
+```
+
+**Verify:**
+
+```bash
+codegraph --version
+```
+
+
+
+### Step 10.2 — Wire up your agent(s)
+
+```bash
+codegraph install
+```
+
+This detects installed agents (Cursor, Claude Code, Codex CLI, and others) and writes the CodeGraph MCP config. Choose **global** so it applies to all projects, or **local** for the current repo only.
+
+Non-interactive shortcut (auto-detect agents, global):
+
+```bash
+codegraph install --yes
+```
+
+Or target Cursor explicitly:
+
+```bash
+codegraph install --target=cursor --yes
+```
+
+**Restart Cursor** (fully quit and reopen) so the MCP server loads.
+
+
+
+### Step 10.3 — Initialize each project
+
+Run once per repo you want indexed:
+
+```bash
+cd your-project
+codegraph init
+```
+
+Creates `.codegraph/` and builds the graph. Auto-sync is on by default — the index updates as files change.
+
+**Verify:**
+
+```bash
+codegraph status
+```
+
+
+
+### Step 10.4 — Upgrade / uninstall
+
+```bash
+codegraph upgrade          # update in place
+codegraph upgrade --check  # see if an update is available
+codegraph uninstall        # remove agent configs + CLI
+codegraph uninit           # remove this project's .codegraph/ index only
+```
+
+Docs: [codegraph installation](https://colbymchenry.github.io/codegraph/getting-started/installation/).
+
+---
+
+
+
 ## Final verification checklist
 
 Run through this list. Every item should pass before you call setup done.
@@ -641,6 +734,9 @@ docker run --rm hello-world
 # Phase 7
 kubectl version --client
 terraform version
+
+# Phase 10 (optional)
+codegraph --version
 ```
 
 **GUI sanity check:**
@@ -650,6 +746,7 @@ terraform version
 - [ ] Cursor opens and `cursor .` works in terminal
 - [ ] Chrome + Bitwarden extension work
 - [ ] Postman launches
+- [ ] CodeGraph MCP shows in Cursor (after `codegraph install` + restart)
 
 ---
 
@@ -714,6 +811,18 @@ Confirm the public key is added on GitHub.
 sudo xcodebuild -license accept
 ```
 
+### codegraph: command not found
+
+Open a new terminal, or ensure `~/.local/bin` is on your PATH:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+source ~/.zshrc
+codegraph --version
+```
+
+If you installed via npm instead: `npm i -g @colbymchenry/codegraph`.
+
 ---
 
 
@@ -728,6 +837,7 @@ npm update -g
 rustup update
 go install golang.org/x/tools/gopls@latest
 colima stop && colima start   # after Colima upgrades
+codegraph upgrade             # if CodeGraph is installed
 ```
 
 ---
@@ -747,6 +857,7 @@ Phase 6   Colima + Docker
 Phase 7   kubectl → Terraform
 Phase 8   Optional CLI extras
 Phase 9   Optional Cursor skills
+Phase 10  Optional CodeGraph (CLI → install → init per project)
 Verify  Run checklist
 ```
 
