@@ -18,7 +18,7 @@ Works on Apple Silicon (M-series) and Intel Macs. Commands assume **zsh** (macOS
 | Languages         | Node (nvm), Bun, Python (pyenv), Go, Rust          |
 | Containers        | Colima + Docker CLI                                |
 | DevOps CLI        | git, GitHub CLI, kubectl, Terraform                |
-| GUI apps          | Cursor, Chrome, Postman                            |
+| GUI apps          | Cursor, Chrome, Postman, Obsidian, Atomic Chat     |
 | AI code intel     | CodeGraph (local MCP knowledge graph for agents)   |
 
 
@@ -348,6 +348,38 @@ brew install --cask postman
 ```
 
 Or download from [postman.com](https://www.postman.com/downloads/).
+
+
+
+### Step 4.4 — Obsidian (notes / knowledge base)
+
+Local Markdown notes with links and graph view — useful for docs, research, and personal wikis.
+
+```bash
+brew install --cask obsidian
+```
+
+Or download from [obsidian.md/download](https://obsidian.md/download).
+
+**Setup:**
+
+1. Open **Obsidian**.
+2. Create a new vault or open an existing folder.
+3. (Optional) Sign in for Obsidian Sync / Publish if you use them.
+
+
+
+### Step 4.5 — Atomic Chat (local AI chat)
+
+[Atomic Chat](https://atomic.chat/) runs open-source AI models fully on-device — no cloud, no subscription. Requires **macOS 13+** and **Apple Silicon** (M1 or newer).
+
+1. Download from [atomic.chat](https://atomic.chat/) → **Download for Mac**.
+2. Open the `.dmg` (or unzip), drag **Atomic Chat** to **Applications**.
+3. Open the app → pick a model (Llama, Qwen, DeepSeek, etc.) → download → start chatting.
+
+Or install from the **Mac App Store** (search **Atomic Chat**).
+
+> First model download can be multi-GB. Prefer Wi-Fi and plugged-in power. Larger models need more RAM (rough guide: ~8 GB for 3B, ~16 GB for 7B, ~32 GB for 13B).
 
 ---
 
@@ -746,6 +778,8 @@ codegraph --version
 - [ ] Cursor opens and `cursor .` works in terminal
 - [ ] Chrome + Bitwarden extension work
 - [ ] Postman launches
+- [ ] Obsidian opens and a vault loads
+- [ ] Atomic Chat opens and a model can be downloaded (Apple Silicon)
 - [ ] CodeGraph MCP shows in Cursor (after `codegraph install` + restart)
 
 ---
@@ -851,7 +885,7 @@ Phase 0   Bitwarden → Shadowrocket → GitHub account → Xcode + CLT
 Phase 1   Homebrew
 Phase 2   Oh My Zsh → plugins → Powerlevel10k → fzf/fd → ~/.zshrc
 Phase 3   Git config → SSH key → gh CLI
-Phase 4   Cursor → Chrome → Postman
+Phase 4   Cursor → Chrome → Postman → Obsidian → Atomic Chat
 Phase 5   nvm/Node → Bun → pyenv/Python → Go → Rust
 Phase 6   Colima + Docker
 Phase 7   kubectl → Terraform
