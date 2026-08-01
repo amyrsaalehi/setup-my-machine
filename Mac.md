@@ -18,7 +18,7 @@ Works on Apple Silicon (M-series) and Intel Macs. Commands assume **zsh** (macOS
 | Languages         | Node (nvm), Bun, Python (pyenv), Go, Rust          |
 | Containers        | Colima + Docker CLI                                |
 | DevOps CLI        | git, GitHub CLI, kubectl, Terraform                |
-| GUI apps          | Cursor, Chrome, Postman, Obsidian, Atomic Chat     |
+| GUI apps          | Cursor, Chrome, Postman, Obsidian, Atomic Chat, Terax |
 | AI code intel     | CodeGraph (local MCP knowledge graph for agents)   |
 
 
@@ -380,6 +380,31 @@ Or download from [obsidian.md/download](https://obsidian.md/download).
 Or install from the **Mac App Store** (search **Atomic Chat**).
 
 > First model download can be multi-GB. Prefer Wi-Fi and plugged-in power. Larger models need more RAM (rough guide: ~8 GB for 3B, ~16 GB for 7B, ~32 GB for 13B).
+
+
+
+### Step 4.6 — Terax (AI-native terminal)
+
+[Terax](https://github.com/crynta/terax-ai) is a ~8 MB terminal-based development environment: native PTY backend with WebGL rendering, an agentic AI side panel, editor, file explorer, git visualization, and web preview. No telemetry, no account required. Works on Intel and Apple Silicon.
+
+1. Download the latest `.dmg` from [Releases](https://github.com/crynta/terax-ai/releases/latest).
+2. Open the `.dmg` → drag **Terax** to **Applications**.
+3. Open Terax. The app auto-updates from then on.
+
+**Configure an AI provider:**
+
+Go to **Settings → AI**, pick a provider (OpenAI, Anthropic, Google, or a local model via Ollama), and paste your API key. Keys are stored in the macOS Keychain.
+
+> Prefer local models? Point Terax at **Atomic Chat** or Ollama instead of a cloud provider — no API key needed.
+
+**Build from source (optional)** — needs Rust (Phase 5.5), Node 20+ (Phase 5.1), and pnpm:
+
+```bash
+git clone https://github.com/crynta/terax-ai.git
+cd terax-ai
+pnpm install
+pnpm tauri build
+```
 
 ---
 
@@ -780,6 +805,7 @@ codegraph --version
 - [ ] Postman launches
 - [ ] Obsidian opens and a vault loads
 - [ ] Atomic Chat opens and a model can be downloaded (Apple Silicon)
+- [ ] Terax opens and an AI provider is configured (Settings → AI)
 - [ ] CodeGraph MCP shows in Cursor (after `codegraph install` + restart)
 
 ---
@@ -885,7 +911,7 @@ Phase 0   Bitwarden → Shadowrocket → GitHub account → Xcode + CLT
 Phase 1   Homebrew
 Phase 2   Oh My Zsh → plugins → Powerlevel10k → fzf/fd → ~/.zshrc
 Phase 3   Git config → SSH key → gh CLI
-Phase 4   Cursor → Chrome → Postman → Obsidian → Atomic Chat
+Phase 4   Cursor → Chrome → Postman → Obsidian → Atomic Chat → Terax
 Phase 5   nvm/Node → Bun → pyenv/Python → Go → Rust
 Phase 6   Colima + Docker
 Phase 7   kubectl → Terraform

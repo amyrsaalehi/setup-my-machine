@@ -26,7 +26,7 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | [Phase 1 — Homebrew](Mac.md#phase-1--homebrew) | Install and wire into the shell |
 | [Phase 2 — Shell setup](Mac.md#phase-2--shell-setup) | Oh My Zsh, plugins, Powerlevel10k, fzf/fd, `~/.zshrc` |
 | [Phase 3 — Git and GitHub CLI](Mac.md#phase-3--git-and-github-cli) | Git identity, SSH key, `gh` |
-| [Phase 4 — GUI applications](Mac.md#phase-4--gui-applications) | Cursor, Chrome, Postman, Obsidian, Atomic Chat |
+| [Phase 4 — GUI applications](Mac.md#phase-4--gui-applications) | Cursor, Chrome, Postman, Obsidian, Atomic Chat, Terax |
 | [Phase 5 — Language runtimes](Mac.md#phase-5--language-runtimes) | Node (nvm), Bun, Python (pyenv), Go, Rust |
 | [Phase 6 — Containers](Mac.md#phase-6--containers-colima) | Colima + Docker CLI |
 | [Phase 7 — DevOps CLI](Mac.md#phase-7--devops-cli) | kubectl, Terraform |
@@ -44,7 +44,7 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | [Phase 1 — Package managers](Linux.md#phase-1--package-managers) | apt, optional Homebrew for Linux |
 | [Phase 2 — Shell setup](Linux.md#phase-2--shell-setup) | zsh + `chsh`, Oh My Zsh, Powerlevel10k, fzf/fd, `~/.zshrc` |
 | [Phase 3 — Git and GitHub CLI](Linux.md#phase-3--git-and-github-cli) | Git identity, SSH key, `gh` |
-| [Phase 4 — GUI applications](Linux.md#phase-4--gui-applications) | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI |
+| [Phase 4 — GUI applications](Linux.md#phase-4--gui-applications) | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI, Terax |
 | [Phase 5 — Language runtimes](Linux.md#phase-5--language-runtimes) | Node (nvm), Bun, Python (pyenv), Go, Rust |
 | [Phase 6 — Containers](Linux.md#phase-6--containers-docker-engine) | Docker Engine + Compose plugin (native) |
 | [Phase 7 — DevOps CLI](Linux.md#phase-7--devops-cli) | kubectl, Terraform |
@@ -67,6 +67,7 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | Containers        | Colima + Docker CLI                      | Docker Engine + Compose plugin            |
 | DevOps CLI        | git, GitHub CLI, kubectl, Terraform      | same                                      |
 | GUI apps          | Cursor, Chrome, Postman, Obsidian, Atomic Chat | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI |
+| AI terminal       | Terax (`.dmg`)                           | Terax (`.deb` / AppImage)                 |
 | AI code intel     | CodeGraph (local MCP knowledge graph)    | same                                      |
 
 ---

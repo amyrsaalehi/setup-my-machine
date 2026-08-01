@@ -18,7 +18,7 @@ Targets **Ubuntu 24.04 LTS** (works on 22.04 LTS too — notes call out the diff
 | Languages         | Node (nvm), Bun, Python (pyenv), Go, Rust               |
 | Containers        | Docker Engine + Compose plugin (native, no VM)          |
 | DevOps CLI        | git, GitHub CLI, kubectl, Terraform                     |
-| GUI apps          | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI  |
+| GUI apps          | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI, Terax |
 | AI code intel     | CodeGraph (local MCP knowledge graph for agents)        |
 
 
@@ -490,6 +490,49 @@ Desktop-app alternatives: [Jan](https://jan.ai/), [GPT4All](https://www.nomic.ai
 
 > First model download can be multi-GB. Larger models need more RAM/VRAM (rough guide: ~8 GB for 3B, ~16 GB for 7B, ~32 GB for 13B).
 
+
+
+### Step 4.6 — Terax (AI-native terminal)
+
+[Terax](https://github.com/crynta/terax-ai) is a ~8 MB terminal-based development environment: native PTY backend with WebGL rendering, an agentic AI side panel, editor, file explorer, git visualization, and web preview. No telemetry, no account required.
+
+Download the latest build from [Releases](https://github.com/crynta/terax-ai/releases/latest) — `.deb` and `.AppImage` are the Ubuntu-relevant assets.
+
+**`.deb` (recommended on Ubuntu):**
+
+```bash
+sudo apt install -y ./Terax_*_amd64.deb
+```
+
+**AppImage:**
+
+```bash
+mkdir -p ~/Applications
+mv ~/Downloads/Terax_*.AppImage ~/Applications/terax.AppImage
+chmod +x ~/Applications/terax.AppImage
+~/Applications/terax.AppImage
+```
+
+Needs FUSE 2 — already installed if you did Step 4.1, otherwise `sudo apt install -y libfuse2t64` (24.04) or `libfuse2` (22.04).
+
+**Other distros:** `yay -S terax-bin` (Arch/AUR), `nix profile install github:crynta/terax-ai` (NixOS), or the `.rpm` for Fedora/openSUSE.
+
+**Configure an AI provider:**
+
+Go to **Settings → AI**, pick a provider (OpenAI, Anthropic, Google, or a local model via Ollama), and paste your API key. Keys are stored in the OS keychain.
+
+> Prefer local models? Point Terax at the **Ollama** instance from Step 4.5 — no API key needed.
+
+**Build from source (optional)** — needs Rust (Phase 5.5), Node 20+ (Phase 5.1), pnpm, and the Tauri Linux prerequisites:
+
+```bash
+sudo apt install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+git clone https://github.com/crynta/terax-ai.git
+cd terax-ai
+pnpm install
+pnpm tauri build
+```
+
 ---
 
 
@@ -943,6 +986,7 @@ codegraph --version
 - [ ] Postman launches
 - [ ] Obsidian opens and a vault loads
 - [ ] `ollama run llama3.2` responds (Open WebUI loads at localhost:3000)
+- [ ] Terax opens and an AI provider is configured (Settings → AI)
 - [ ] CodeGraph MCP shows in Cursor (after `codegraph install` + restart)
 
 ---
@@ -1081,7 +1125,7 @@ Phase 0   Bitwarden → VPN client → GitHub account → build-essential
 Phase 1   apt (built in) → Homebrew for Linux (optional)
 Phase 2   zsh + chsh → Oh My Zsh → plugins → Powerlevel10k → fzf/fd → ~/.zshrc
 Phase 3   Git config → SSH key → gh CLI
-Phase 4   Cursor → Chrome → Postman → Obsidian → Ollama + Open WebUI
+Phase 4   Cursor → Chrome → Postman → Obsidian → Ollama + Open WebUI → Terax
 Phase 5   nvm/Node → Bun → pyenv/Python → Go → Rust
 Phase 6   Docker Engine + Compose plugin → docker group
 Phase 7   kubectl → Terraform
