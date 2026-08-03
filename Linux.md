@@ -834,6 +834,7 @@ alias fd="fdfind"   # only if you skipped the symlink in Step 2.5
 If you use Cursor agent skills for AI-assisted workflows:
 
 ```bash
+npx skills add https://github.com/mohi-devhub/antivibe --skill antivibe
 npx skills add https://github.com/juliusbrussee/caveman --skill caveman
 npx skills add https://github.com/juliusbrussee/caveman --skill caveman-commit
 npx skills add https://github.com/anthropics/skills --skill doc-coauthoring
