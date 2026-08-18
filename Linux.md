@@ -19,6 +19,7 @@ Targets **Ubuntu 24.04 LTS** (works on 22.04 LTS too — notes call out the diff
 | Containers        | Docker Engine + Compose plugin (native, no VM)          |
 | DevOps CLI        | git, GitHub CLI, kubectl, Terraform                     |
 | GUI apps          | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI, Terax |
+| AI agents         | Claude Code, Codex CLI, Zed (ACP: Cursor/Claude/Codex)  |
 | AI code intel     | CodeGraph (local MCP knowledge graph for agents)        |
 | AI docs           | Context7 (up-to-date library docs for agents)           |
 
@@ -534,6 +535,79 @@ pnpm install
 pnpm tauri build
 ```
 
+
+
+### Step 4.7 — Claude Code CLI
+
+[Claude Code](https://code.claude.com) is Anthropic's coding agent CLI. The native installer auto-updates in the background.
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+**Verify and sign in:**
+
+```bash
+claude --version
+claude          # first run: choose sign-in method (Claude.ai account or API key)
+```
+
+
+
+### Step 4.8 — Codex CLI
+
+[Codex CLI](https://developers.openai.com/codex/cli) is OpenAI's coding agent CLI. The native installer auto-updates in the background.
+
+```bash
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+```
+
+**Verify and sign in:**
+
+```bash
+codex --version
+codex           # first run: sign in with ChatGPT or an API key
+codex doctor    # optional environment sanity check
+```
+
+
+
+### Step 4.9 — Zed editor + ACP (Cursor, Claude, Codex)
+
+[Zed](https://zed.dev) is a fast, multiplayer code editor. Its [Agent Client Protocol (ACP)](https://agentclientprotocol.com) lets external agents — including Cursor, Claude, and Codex — run natively inside Zed's Agent Panel instead of a separate app.
+
+```bash
+curl -f https://zed.dev/install.sh | sh
+```
+
+The script adds `zed` to your PATH automatically.
+
+**Wire up ACP agents:**
+
+1. Open Zed → Command Palette (**Ctrl+Shift+P**) → `zed: acp registry` (or Agent Panel → **+** → **Install from Registry**).
+2. Install **Claude**, **Codex**, and **Cursor** from the registry.
+3. Start a thread with each from the Agent Panel or Threads Sidebar:
+   - **Claude Agent** — run `/login` in-thread; reuses Claude Code auth from Step 4.7 where supported.
+   - **Codex** — sign in with ChatGPT or an API key; reuses Codex CLI auth from Step 4.8 where supported.
+   - **Cursor** — uses your existing Cursor sign-in from Step 4.1.
+
+> Each agent owns its own authentication and billing — Zed does not proxy it. If an agent is not in the registry yet, add it manually via Agent Settings → External Agents → **Add Custom Agent**, which opens your settings file with an entry like:
+
+```json
+{
+  "agent_servers": {
+    "my-agent": {
+      "type": "custom",
+      "command": "node",
+      "args": ["~/projects/agent/index.js", "--acp"],
+      "env": {}
+    }
+  }
+}
+```
+
+Docs: [Zed external agents](https://zed.dev/docs/ai/external-agents).
+
 ---
 
 
@@ -1042,6 +1116,10 @@ docker compose version
 kubectl version --client
 terraform version
 
+# Phase 4 — AI agents
+claude --version
+codex --version
+
 # Phase 10 (optional)
 codegraph --version
 
@@ -1059,6 +1137,7 @@ npx ctx7 --version
 - [ ] Obsidian opens and a vault loads
 - [ ] `ollama run llama3.2` responds (Open WebUI loads at localhost:3000)
 - [ ] Terax opens and an AI provider is configured (Settings → AI)
+- [ ] Zed opens and Cursor/Claude/Codex threads work via ACP (Agent Panel)
 - [ ] CodeGraph MCP shows in Cursor (after `codegraph install` + restart)
 - [ ] Context7 MCP shows in Cursor (after `ctx7 setup --cursor` + restart, if MCP mode)
 
@@ -1154,6 +1233,19 @@ Confirm the public key is added on GitHub, `~/.ssh` is `700`, and keys are `600`
 
 Re-run the keyring step for that repo (Phases 3, 6, 7). Keys live in `/etc/apt/keyrings/`, and each `sources.list.d` entry must reference the matching `signed-by=` path.
 
+### claude / codex: command not found
+
+Open a new terminal so the native installer's PATH changes take effect. If it still fails, re-run the installer:
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+```
+
+### Zed: ACP agent fails to authenticate or doesn't appear
+
+Each agent (Claude, Codex, Cursor) owns its own sign-in — re-run `/login` inside that agent's thread. If a registry-installed agent misbehaves, inspect the raw protocol traffic with `dev: open acp logs` from Zed's Command Palette.
+
 ### codegraph: command not found
 
 Open a new terminal, or ensure `~/.local/bin` is on your PATH:
@@ -1193,6 +1285,8 @@ codegraph upgrade               # if CodeGraph is installed
 brew update && brew upgrade     # if Homebrew for Linux is installed
 ```
 
+Claude Code and Codex CLI auto-update themselves in the background; re-run the Zed install script to update it, or let it prompt after launch.
+
 Reboot after kernel upgrades — `ls /var/run/reboot-required` tells you when one is pending.
 
 ---
@@ -1206,7 +1300,7 @@ Phase 0   Bitwarden → VPN client → GitHub account → build-essential
 Phase 1   apt (built in) → Homebrew for Linux (optional)
 Phase 2   zsh + chsh → Oh My Zsh → plugins → Powerlevel10k → fzf/fd → ~/.zshrc
 Phase 3   Git config → SSH key → gh CLI
-Phase 4   Cursor → Chrome → Postman → Obsidian → Ollama + Open WebUI → Terax
+Phase 4   Cursor → Chrome → Postman → Obsidian → Ollama + Open WebUI → Terax → Claude Code → Codex CLI → Zed + ACP
 Phase 5   nvm/Node → Bun → pyenv/Python → Go → Rust
 Phase 6   Docker Engine + Compose plugin → docker group
 Phase 7   kubectl → Terraform
