@@ -20,6 +20,7 @@ Works on Apple Silicon (M-series) and Intel Macs. Commands assume **zsh** (macOS
 | DevOps CLI        | git, GitHub CLI, kubectl, Terraform                |
 | GUI apps          | Cursor, Chrome, Postman, Obsidian, Atomic Chat, Terax |
 | AI code intel     | CodeGraph (local MCP knowledge graph for agents)   |
+| AI docs           | Context7 (up-to-date library docs for agents)      |
 
 
 ---
@@ -762,6 +763,73 @@ Docs: [codegraph installation](https://colbymchenry.github.io/codegraph/getting-
 
 
 
+## Phase 11 — Context7 (optional)
+
+[Context7](https://github.com/upstash/context7) pulls up-to-date, version-specific library documentation and code examples into Cursor's context, instead of relying on outdated training data. Setup offers two modes: **MCP** (Cursor calls Context7 tools natively) or **CLI + Skills** (installs a skill that runs `ctx7` commands).
+
+Requires Node.js 18+ (Phase 5) and Cursor (Phase 4).
+
+### Step 11.1 — Get an API key (recommended)
+
+Free at [context7.com/dashboard](https://context7.com/dashboard) — raises your rate limit. Setup works without one via OAuth login, just with a lower quota.
+
+### Step 11.2 — Run setup for Cursor
+
+```bash
+npx ctx7 setup --cursor
+```
+
+Prompts for OAuth login, then lets you pick MCP or CLI + Skills mode. Non-interactive shortcuts:
+
+```bash
+npx ctx7 setup --cursor --mcp --yes    # MCP mode (native tools)
+npx ctx7 setup --cli --cursor --yes    # CLI + Skills mode only
+```
+
+Already have a key from Step 11.1? Pass it directly:
+
+```bash
+npx ctx7 setup --cursor --api-key YOUR_API_KEY
+```
+
+**Restart Cursor** (fully quit and reopen) so the MCP server loads, if you chose MCP mode.
+
+### Step 11.3 — Optional global CLI
+
+```bash
+npm install -g ctx7
+```
+
+Skip this and keep using `npx ctx7@latest ...` if you'd rather not install it globally.
+
+**Verify:**
+
+```bash
+npx ctx7 --version
+```
+
+### Step 11.4 — Optional rule
+
+`ctx7 setup` already installs a skill that triggers Context7 automatically. If you prefer an explicit rule instead, add this in **Cursor Settings → Rules and Commands**:
+
+```
+Always use Context7 when I need library/API documentation, code generation,
+setup or configuration steps without me having to explicitly ask.
+```
+
+### Step 11.5 — Remove
+
+```bash
+npx ctx7 remove --cursor
+npm uninstall -g ctx7   # only if you installed the CLI globally in Step 11.3
+```
+
+Docs: [Context7 CLI reference](https://context7.com/docs/clients/cli).
+
+---
+
+
+
 ## Final verification checklist
 
 Run through this list. Every item should pass before you call setup done.
@@ -795,6 +863,9 @@ terraform version
 
 # Phase 10 (optional)
 codegraph --version
+
+# Phase 11 (optional)
+npx ctx7 --version
 ```
 
 **GUI sanity check:**
@@ -808,6 +879,7 @@ codegraph --version
 - [ ] Atomic Chat opens and a model can be downloaded (Apple Silicon)
 - [ ] Terax opens and an AI provider is configured (Settings → AI)
 - [ ] CodeGraph MCP shows in Cursor (after `codegraph install` + restart)
+- [ ] Context7 MCP shows in Cursor (after `ctx7 setup --cursor` + restart, if MCP mode)
 
 ---
 
@@ -884,6 +956,14 @@ codegraph --version
 
 If you installed via npm instead: `npm i -g @colbymchenry/codegraph`.
 
+### Context7: quota exceeded or MCP not showing up
+
+```bash
+npx ctx7 login          # re-authenticate for higher rate limits
+```
+
+If Cursor does not list the Context7 MCP server, fully quit and reopen Cursor after running `ctx7 setup --cursor`. If `ctx7` is not found, use `npx ctx7@latest` or install it globally: `npm install -g ctx7`.
+
 ---
 
 
@@ -899,6 +979,7 @@ rustup update
 go install golang.org/x/tools/gopls@latest
 colima stop && colima start   # after Colima upgrades
 codegraph upgrade             # if CodeGraph is installed
+npm update -g ctx7            # if Context7 CLI is installed globally
 ```
 
 ---
@@ -919,6 +1000,7 @@ Phase 7   kubectl → Terraform
 Phase 8   Optional CLI extras
 Phase 9   Optional Cursor skills
 Phase 10  Optional CodeGraph (CLI → install → init per project)
+Phase 11  Optional Context7 (npx ctx7 setup --cursor)
 Verify  Run checklist
 ```
 

@@ -33,6 +33,7 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | [Phase 8 — Recommended extras](Mac.md#phase-8--recommended-extras) | ripgrep, bat, eza, jq, lazygit, … |
 | [Phase 9 — Cursor agent skills](Mac.md#phase-9--cursor-agent-skills-optional) | Optional AI workflow skills |
 | [Phase 10 — CodeGraph](Mac.md#phase-10--codegraph-optional) | Optional local code knowledge graph (MCP) |
+| [Phase 11 — Context7](Mac.md#phase-11--context7-optional) | Optional up-to-date library docs for agents (MCP) |
 | [Verification](Mac.md#final-verification-checklist) · [Troubleshooting](Mac.md#troubleshooting) · [Maintenance](Mac.md#maintenance) | Checks, fixes, upkeep |
 
 ### [Linux.md](Linux.md) — Ubuntu
@@ -51,6 +52,7 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | [Phase 8 — Recommended extras](Linux.md#phase-8--recommended-extras) | ripgrep, bat, eza, jq, lazygit, … |
 | [Phase 9 — Cursor agent skills](Linux.md#phase-9--cursor-agent-skills-optional) | Optional AI workflow skills |
 | [Phase 10 — CodeGraph](Linux.md#phase-10--codegraph-optional) | Optional local code knowledge graph (MCP) |
+| [Phase 11 — Context7](Linux.md#phase-11--context7-optional) | Optional up-to-date library docs for agents (MCP) |
 | [Verification](Linux.md#final-verification-checklist) · [Troubleshooting](Linux.md#troubleshooting) · [Maintenance](Linux.md#maintenance) | Checks, fixes, upkeep |
 
 ---
@@ -69,13 +71,14 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | GUI apps          | Cursor, Chrome, Postman, Obsidian, Atomic Chat | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI |
 | AI terminal       | Terax (`.dmg`)                           | Terax (`.deb` / AppImage)                 |
 | AI code intel     | CodeGraph (local MCP knowledge graph)    | same                                      |
+| AI docs           | Context7 (up-to-date library docs)       | same                                      |
 
 ---
 
 ## How to use these guides
 
 1. Pick the guide for your OS.
-2. Work through the phases in order — Phase 0 through 7 are the core; 8–10 are optional.
+2. Work through the phases in order — Phase 0 through 7 are the core; 8–11 are optional.
 3. Run each **Verify** block before moving on; a failed verify is much cheaper to fix immediately.
 4. Finish with the [final verification checklist](Mac.md#final-verification-checklist) ([Linux](Linux.md#final-verification-checklist)).
 
