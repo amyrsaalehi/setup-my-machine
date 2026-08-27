@@ -56,8 +56,15 @@ Do these first. You need passwords, network access, and Apple dev tooling before
 ### Step 0.2 — Shadowrocket (VPN)
 
 1. Open **App Store** → search **Shadowrocket** → Install.
-2. Import your VPN subscription.
-3. Connect and verify browsing works.
+2. Import your VPN subscription (Home → **+** → Type: **Subscribe** → paste your provider URL).
+3. Add the Iran-optimized remote config ([ja7ad/ShadowRocket](https://github.com/ja7ad/ShadowRocket)):
+   - Open the **Config** tab → **+**
+   - Paste: `https://raw.githubusercontent.com/Ja7ad/ShadowRocket/main/shadowIR.conf`
+   - Download, then tap the file → **Use Config**
+   - Set **Global Routing** to **Config**
+4. Connect and verify browsing works.
+
+This config bypasses Iranian IPs, routes Telegram through the proxy, uses Cloudflare DNS, and blocks ads.
 
 > Use VPN before signing into sensitive accounts.
 
