@@ -22,6 +22,7 @@ Works on Apple Silicon (M-series) and Intel Macs. Commands assume **zsh** (macOS
 | AI agents         | Claude Code, Codex CLI, Zed (ACP: Cursor/Claude/Codex) |
 | AI code intel     | CodeGraph (local MCP knowledge graph for agents)   |
 | AI docs           | Context7 (up-to-date library docs for agents)      |
+| AI project tooling | Graft (codebase context graph)                      |
 
 
 ---
@@ -909,6 +910,34 @@ Docs: [Context7 CLI reference](https://context7.com/docs/clients/cli).
 
 
 
+## Phase 12 — Graft (optional)
+
+[Graft](https://github.com/trailhq/Graft) builds a codebase context graph, helping coding agents find relevant files and symbols.
+
+### Step 12.1 — Install Graft
+
+```bash
+npm install -g @nanonets/graft
+graft --version
+```
+
+### Step 12.2 — Initialize a repository
+
+Run from each project root you want to wire into Graft:
+
+```bash
+cd /path/to/project
+graft init
+```
+
+`graft init` builds the graph and wires supported coding agents. Useful commands:
+
+```bash
+graft build
+graft ask "where is authentication implemented?"
+graft check
+```
+
 ## Final verification checklist
 
 Run through this list. Every item should pass before you call setup done.
@@ -949,6 +978,9 @@ codegraph --version
 
 # Phase 11 (optional)
 npx ctx7 --version
+
+# Phase 12 (optional)
+graft --version
 ```
 
 **GUI sanity check:**
@@ -964,6 +996,7 @@ npx ctx7 --version
 - [ ] Zed opens and Cursor/Claude/Codex threads work via ACP (Agent Panel)
 - [ ] CodeGraph MCP shows in Cursor (after `codegraph install` + restart)
 - [ ] Context7 MCP shows in Cursor (after `ctx7 setup --cursor` + restart, if MCP mode)
+- [ ] Graft is installed and initialized in each intended repository
 
 ---
 
@@ -1053,6 +1086,16 @@ codegraph --version
 
 If you installed via npm instead: `npm i -g @colbymchenry/codegraph`.
 
+### Graft: command not found or stale graph
+
+Open a new shell if npm’s global bin directory is not yet on `PATH`. Inspect it with:
+
+```bash
+npm prefix -g
+```
+
+Run `graft init` from the repository root. Rerun `graft init` for missing wiring; use `graft check` to detect drift.
+
 ### Context7: quota exceeded or MCP not showing up
 
 ```bash
@@ -1077,6 +1120,8 @@ go install golang.org/x/tools/gopls@latest
 colima stop && colima start   # after Colima upgrades
 codegraph upgrade             # if CodeGraph is installed
 npm update -g ctx7            # if Context7 CLI is installed globally
+npm update -g @nanonets/graft # if Graft is installed
+graft check /path/to/project
 ```
 
 Claude Code and Codex CLI auto-update themselves in the background; Zed prompts to update after each launch.
