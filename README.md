@@ -27,7 +27,7 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | [Phase 2 — Shell setup](Mac.md#phase-2--shell-setup) | Oh My Zsh, plugins, Powerlevel10k, fzf/fd, `~/.zshrc` |
 | [Phase 3 — Git and GitHub CLI](Mac.md#phase-3--git-and-github-cli) | Git identity, SSH key, `gh` |
 | [Phase 4 — GUI applications](Mac.md#phase-4--gui-applications) | Cursor, Chrome, Postman, Obsidian, Atomic Chat, Terax, Claude Code, Codex CLI, Zed |
-| [Phase 5 — Language runtimes](Mac.md#phase-5--language-runtimes) | Node (nvm), Bun, Python (pyenv), Go, Rust |
+| [Phase 5 — Language runtimes](Mac.md#phase-5--language-runtimes) | Node (nvm), Bun, Python (pyenv), Go, Rust, pi |
 | [Phase 6 — Containers](Mac.md#phase-6--containers-colima) | Colima + Docker CLI |
 | [Phase 7 — DevOps CLI](Mac.md#phase-7--devops-cli) | kubectl, Terraform |
 | [Phase 8 — Recommended extras](Mac.md#phase-8--recommended-extras) | ripgrep, bat, eza, jq, lazygit, … |
@@ -47,7 +47,7 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | [Phase 2 — Shell setup](Linux.md#phase-2--shell-setup) | zsh + `chsh`, Oh My Zsh, Powerlevel10k, fzf/fd, `~/.zshrc` |
 | [Phase 3 — Git and GitHub CLI](Linux.md#phase-3--git-and-github-cli) | Git identity, SSH key, `gh` |
 | [Phase 4 — GUI applications](Linux.md#phase-4--gui-applications) | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI, Terax, Claude Code, Codex CLI, Zed |
-| [Phase 5 — Language runtimes](Linux.md#phase-5--language-runtimes) | Node (nvm), Bun, Python (pyenv), Go, Rust |
+| [Phase 5 — Language runtimes](Linux.md#phase-5--language-runtimes) | Node (nvm), Bun, Python (pyenv), Go, Rust, pi |
 | [Phase 6 — Containers](Linux.md#phase-6--containers-docker-engine) | Docker Engine + Compose plugin (native) |
 | [Phase 7 — DevOps CLI](Linux.md#phase-7--devops-cli) | kubectl, Terraform |
 | [Phase 8 — Recommended extras](Linux.md#phase-8--recommended-extras) | ripgrep, bat, eza, jq, lazygit, … |
@@ -72,7 +72,7 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | DevOps CLI        | git, GitHub CLI, kubectl, Terraform      | same                                      |
 | GUI apps          | Cursor, Chrome, Postman, Obsidian, Atomic Chat | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI |
 | AI terminal       | Terax (`.dmg`)                           | Terax (`.deb` / AppImage)                 |
-| AI agents         | Claude Code, Codex CLI, Zed (ACP: Cursor/Claude/Codex) | same                         |
+| AI agents         | Claude Code, Codex CLI, pi, Zed (ACP: Cursor/Claude/Codex) | same                         |
 | AI code intel     | CodeGraph (local MCP knowledge graph)    | same                                      |
 | AI docs           | Context7 (up-to-date library docs)       | same                                      |
 | AI project tooling | Graft (codebase context graph)           | same                                      |

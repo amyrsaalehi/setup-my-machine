@@ -19,7 +19,7 @@ Targets **Ubuntu 24.04 LTS** (works on 22.04 LTS too — notes call out the diff
 | Containers        | Docker Engine + Compose plugin (native, no VM)          |
 | DevOps CLI        | git, GitHub CLI, kubectl, Terraform                     |
 | GUI apps          | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI, Terax |
-| AI agents         | Claude Code, Codex CLI, Zed (ACP: Cursor/Claude/Codex)  |
+| AI agents         | Claude Code, Codex CLI, pi, Zed (ACP: Cursor/Claude/Codex)  |
 | AI code intel     | CodeGraph (local MCP knowledge graph for agents)        |
 | AI docs           | Context7 (up-to-date library docs for agents)           |
 | AI project tooling | Graft (codebase context graph)                           |
@@ -756,6 +756,81 @@ rustc --version
 cargo --version
 ```
 
+### Step 5.6 — Pi coding agent
+
+[Pi](https://pi.dev) is a minimal terminal coding harness with extensions, skills, themes, and package support.
+
+```bash
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+```
+
+`--ignore-scripts` disables dependency lifecycle scripts during install. Pi does not require install scripts for normal npm installs.
+
+Installer alternative:
+
+```bash
+curl -fsSL https://pi.dev/install.sh | sh
+```
+
+**Verify and sign in:**
+
+```bash
+pi --version
+pi
+/login     # first run inside pi: choose a provider or API key
+```
+
+### Step 5.7 — Pi packages: 9router + subagents
+
+Install both Pi packages with Pi's package manager:
+
+```bash
+pi install npm:pi-9router-ext
+pi install npm:@ferris1225/pi-subagents
+pi list
+```
+
+**Set up `pi-9router-ext`:**
+
+1. Make sure your 9router instance is running and reachable. Default: `http://localhost:20128`.
+2. Optional shell defaults in `~/.zshrc`:
+
+```bash
+export NINE_ROUTER_BASE_URL="http://localhost:20128"
+export NINE_ROUTER_API_KEY="nr-..."      # only if your 9router requires an API key
+export NINE_ROUTER_ENABLE_REASONING="1"  # optional
+```
+
+3. Reload your shell:
+
+```bash
+source ~/.zshrc
+```
+
+4. Open `pi`, then run:
+   - `/9router-config` — set base URL, API key, reasoning, and web defaults
+   - `/9router-reload` — discover models and web routes from 9router
+   - `/9router-status` — confirm connection and available routes
+
+`pi-9router-ext` also adds `ninerouter_status`, `ninerouter_web_search`, and `ninerouter_web_fetch` as Pi tools.
+
+**Set up `@ferris1225/pi-subagents`:**
+
+Open `pi`, then run:
+
+- `/subagents-setup` — enable roles and choose model / thinking defaults
+
+This package adds managed `scout`, `artisan`, `steward`, and `sentinel` roles plus the `subagent`, `subagent_status`, `subagent_stop`, and `subagent_risk` tools.
+
+**Verify:**
+
+```bash
+pi list
+# Expected to include:
+# - pi-9router-ext
+# - @ferris1225/pi-subagents
+```
+
 ---
 
 
@@ -1149,6 +1224,10 @@ terraform version
 claude --version
 codex --version
 
+# Phase 5 — pi
+pi --version
+pi list
+
 # Phase 10 (optional)
 codegraph --version
 
@@ -1169,6 +1248,9 @@ graft --version
 - [ ] Obsidian opens and a vault loads
 - [ ] `ollama run llama3.2` responds (Open WebUI loads at localhost:3000)
 - [ ] Terax opens and an AI provider is configured (Settings → AI)
+- [ ] pi opens, `/login` works, and `pi list` shows `pi-9router-ext` and `@ferris1225/pi-subagents`
+- [ ] `/9router-status` works in pi and shows a connected router when 9router is installed/running
+- [ ] `/subagents-setup` opens in pi and enabled roles load
 - [ ] Zed opens and Cursor/Claude/Codex threads work via ACP (Agent Panel)
 - [ ] CodeGraph MCP shows in Cursor (after `codegraph install` + restart)
 - [ ] Context7 MCP shows in Cursor (after `ctx7 setup --cursor` + restart, if MCP mode)
@@ -1275,6 +1357,33 @@ curl -fsSL https://claude.ai/install.sh | bash
 curl -fsSL https://chatgpt.com/codex/install.sh | sh
 ```
 
+### pi: command not found
+
+Open a new terminal so npm's global bin directory is on your `PATH`, then refresh the shell hash:
+
+```bash
+hash -r
+npm prefix -g
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+pi --version
+```
+
+If you used the installer instead of npm, re-run:
+
+```bash
+curl -fsSL https://pi.dev/install.sh | sh
+```
+
+### pi 9router: package installed but no models or web tools appear
+
+Check that 9router is reachable and returning models:
+
+```bash
+curl http://localhost:20128/v1/models
+```
+
+If it fails, verify `NINE_ROUTER_BASE_URL` and `NINE_ROUTER_API_KEY`, then open `pi` and run `/9router-config` followed by `/9router-reload`. If web tools still do not appear, make sure your 9router instance has a configured web route and re-run `/9router-status`.
+
 ### Zed: ACP agent fails to authenticate or doesn't appear
 
 Each agent (Claude, Codex, Cursor) owns its own sign-in — re-run `/login` inside that agent's thread. If a registry-installed agent misbehaves, inspect the raw protocol traffic with `dev: open acp logs` from Zed's Command Palette.
@@ -1321,6 +1430,7 @@ Run periodically to keep tools current:
 sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
 sudo snap refresh
 npm update -g
+pi update --all              # update pi and installed pi packages
 rustup update
 go install golang.org/x/tools/gopls@latest
 docker system prune -f          # reclaim image/container space
@@ -1346,7 +1456,7 @@ Phase 1   apt (built in) → Homebrew for Linux (optional)
 Phase 2   zsh + chsh → Oh My Zsh → plugins → Powerlevel10k → fzf/fd → ~/.zshrc
 Phase 3   Git config → SSH key → gh CLI
 Phase 4   Cursor → Chrome → Postman → Obsidian → Ollama + Open WebUI → Terax → Claude Code → Codex CLI → Zed + ACP
-Phase 5   nvm/Node → Bun → pyenv/Python → Go → Rust
+Phase 5   nvm/Node → Bun → pyenv/Python → Go → Rust → pi + pi packages
 Phase 6   Docker Engine + Compose plugin → docker group
 Phase 7   kubectl → Terraform
 Phase 8   Optional CLI extras
