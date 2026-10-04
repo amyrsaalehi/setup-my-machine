@@ -27,11 +27,11 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | [Phase 2 — Shell setup](Mac.md#phase-2--shell-setup) | Oh My Zsh, plugins, Powerlevel10k, fzf/fd, `~/.zshrc` |
 | [Phase 3 — Git and GitHub CLI](Mac.md#phase-3--git-and-github-cli) | Git identity, SSH key, `gh` |
 | [Phase 4 — GUI applications](Mac.md#phase-4--gui-applications) | Cursor, Chrome, Postman, Obsidian, Atomic Chat, Terax, Claude Code, Codex CLI, Zed |
-| [Phase 5 — Language runtimes](Mac.md#phase-5--language-runtimes) | Node (nvm), Bun, Python (pyenv), Go, Rust, pi |
+| [Phase 5 — Language runtimes](Mac.md#phase-5--language-runtimes) | Node (nvm), Bun, Python (pyenv), Go, Rust, pi + packages, settings, extensions |
 | [Phase 6 — Containers](Mac.md#phase-6--containers-colima) | Colima + Docker CLI |
 | [Phase 7 — DevOps CLI](Mac.md#phase-7--devops-cli) | kubectl, Terraform |
 | [Phase 8 — Recommended extras](Mac.md#phase-8--recommended-extras) | ripgrep, bat, eza, jq, lazygit, … |
-| [Phase 9 — Cursor agent skills](Mac.md#phase-9--cursor-agent-skills-optional) | Optional AI workflow skills |
+| [Phase 9 — Agent skills](Mac.md#phase-9--agent-skills-optional) | Optional skills for pi / Claude / Cursor / Codex |
 | [Phase 10 — CodeGraph](Mac.md#phase-10--codegraph-optional) | Optional local code knowledge graph (MCP) |
 | [Phase 11 — Context7](Mac.md#phase-11--context7-optional) | Optional up-to-date library docs for agents (MCP) |
 | [Phase 12 — Graft](Mac.md#phase-12--graft-optional) | Optional codebase context graph and agent wiring |
@@ -47,11 +47,11 @@ Both guides follow the same phased structure, so you can start at Phase 0 on a b
 | [Phase 2 — Shell setup](Linux.md#phase-2--shell-setup) | zsh + `chsh`, Oh My Zsh, Powerlevel10k, fzf/fd, `~/.zshrc` |
 | [Phase 3 — Git and GitHub CLI](Linux.md#phase-3--git-and-github-cli) | Git identity, SSH key, `gh` |
 | [Phase 4 — GUI applications](Linux.md#phase-4--gui-applications) | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI, Terax, Claude Code, Codex CLI, Zed |
-| [Phase 5 — Language runtimes](Linux.md#phase-5--language-runtimes) | Node (nvm), Bun, Python (pyenv), Go, Rust, pi |
+| [Phase 5 — Language runtimes](Linux.md#phase-5--language-runtimes) | Node (nvm), Bun, Python (pyenv), Go, Rust, pi + packages, settings, extensions |
 | [Phase 6 — Containers](Linux.md#phase-6--containers-docker-engine) | Docker Engine + Compose plugin (native) |
 | [Phase 7 — DevOps CLI](Linux.md#phase-7--devops-cli) | kubectl, Terraform |
 | [Phase 8 — Recommended extras](Linux.md#phase-8--recommended-extras) | ripgrep, bat, eza, jq, lazygit, … |
-| [Phase 9 — Cursor agent skills](Linux.md#phase-9--cursor-agent-skills-optional) | Optional AI workflow skills |
+| [Phase 9 — Agent skills](Linux.md#phase-9--agent-skills-optional) | Optional skills for pi / Claude / Cursor / Codex |
 | [Phase 10 — CodeGraph](Linux.md#phase-10--codegraph-optional) | Optional local code knowledge graph (MCP) |
 | [Phase 11 — Context7](Linux.md#phase-11--context7-optional) | Optional up-to-date library docs for agents (MCP) |
 | [Phase 12 — Graft](Linux.md#phase-12--graft-optional) | Optional codebase context graph and agent wiring |

@@ -1,0 +1,12 @@
+{
+  "packages": [
+    "npm:pi-9router-ext",
+    "npm:pi-subagents",
+    "npm:pi-typesafe"
+  ],
+  "theme": "dark",
+  "defaultProvider": "9router",
+  "defaultModel": "gap/claude-opus-5-5",
+  "hideThinkingBlock": true,
+  "defaultThinkingLevel": "high"
+}

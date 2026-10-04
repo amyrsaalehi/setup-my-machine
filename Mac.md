@@ -640,13 +640,14 @@ pi
 /login     # first run inside pi: choose a provider or API key
 ```
 
-### Step 5.7 — Pi packages: 9router + subagents
+### Step 5.7 — Pi packages: 9router + subagents + TypeSafe
 
-Install both Pi packages with Pi's package manager:
+Install the Pi packages with Pi's package manager:
 
 ```bash
 pi install npm:pi-9router-ext
-pi install npm:@ferris1225/pi-subagents
+pi install npm:pi-subagents
+pi install npm:pi-typesafe
 pi list
 ```
 
@@ -674,13 +675,21 @@ source ~/.zshrc
 
 `pi-9router-ext` also adds `ninerouter_status`, `ninerouter_web_search`, and `ninerouter_web_fetch` as Pi tools.
 
-**Set up `@ferris1225/pi-subagents`:**
+**Set up `pi-subagents`:**
 
-Open `pi`, then run:
+[`pi-subagents`](https://github.com/nicobailon/pi-subagents) adds the `subagent`, `bg_wait`, and `subagent_supervisor` tools plus builtin agents: `scout`, `worker`, `reviewer`, `oracle`, `delegate`, `researcher`, `evidence-auditor`, and external-CLI runners (`claude-code`, `codex-exec`, `cursor-agent`). It also ships the `pi-subagents` and `council-mode` skills.
 
-- `/subagents-setup` — enable roles and choose model / thinking defaults
+Inside `pi`, ask for delegation explicitly (e.g. "use subagents to …"). Model routing per agent is configured via settings/profiles — see the package README.
 
-This package adds managed `scout`, `artisan`, `steward`, and `sentinel` roles plus the `subagent`, `subagent_status`, `subagent_stop`, and `subagent_risk` tools.
+> Migrating from `@ferris1225/pi-subagents`: run `pi remove npm:@ferris1225/pi-subagents` and delete the stale `~/.pi/agent/pi-subagents.json` (it holds the old `artisan`/`steward`/`sentinel` role config).
+
+**Set up `pi-typesafe`:**
+
+[`pi-typesafe`](https://www.npmjs.com/package/pi-typesafe) adds the `typesafe_evaluate` tool (structured Choice/Score/Yes-No judgments via api.typesafe.ai). It is opt-in — inside `pi` run:
+
+- `/typesafe enable` (or export `PI_TYPESAFE_ENABLED=1`)
+
+Pair it with the `typesafe-ai` skill from Phase 9.
 
 **Verify:**
 
@@ -688,8 +697,43 @@ This package adds managed `scout`, `artisan`, `steward`, and `sentinel` roles pl
 pi list
 # Expected to include:
 # - pi-9router-ext
-# - @ferris1225/pi-subagents
+# - pi-subagents
+# - pi-typesafe
 ```
+
+### Step 5.8 — Pi settings + local extensions (from this repo)
+
+This repo ships a sample config and local extensions in [`pi/`](pi/README.md):
+
+| Path | What |
+| --- | --- |
+| `pi/settings.json` | Sample `~/.pi/agent/settings.json` (packages, `defaultProvider: 9router`, model, thinking level, theme) |
+| `pi/extensions/ask-user-question.ts` | `ask_user_question` tool with TUI editor |
+| `pi/extensions/custom-header.ts` | Custom startup header (edit `buildHeader()`) |
+| `pi/extensions/browser/` | Headless Playwright Chromium tools (`browser_goto`, `browser_click`, `browser_screenshot`, …) |
+| `pi/extensions/web-fetch/` | Local `web_fetch` tool: HTML → markdown, PDF → text (no external service) |
+| `pi/extensions/prompt-snippets/` | Toggle prompt rules with `alt+s` or `/snippets` |
+
+Run from the repo root:
+
+```bash
+mkdir -p ~/.pi/agent/extensions
+
+# Settings: merge by hand if you already have one
+[ -f ~/.pi/agent/settings.json ] && cp ~/.pi/agent/settings.json ~/.pi/agent/settings.json.bak
+cp pi/settings.json ~/.pi/agent/settings.json
+
+# Extensions: symlink so `git pull` updates them
+for e in ask-user-question.ts custom-header.ts browser web-fetch prompt-snippets; do
+  ln -sfn "$PWD/pi/extensions/$e" ~/.pi/agent/extensions/$e
+done
+
+# Extension dependencies
+(cd pi/extensions/browser && npm install && npx playwright install chromium)
+(cd pi/extensions/web-fetch && npm install)
+```
+
+Restart `pi` to load the extensions. `web-fetch` overlaps with `ninerouter_web_fetch`; keep both or remove one.
 
 ---
 
@@ -806,18 +850,37 @@ Add aliases in `~/.zshrc` as you prefer.
 
 
 
-## Phase 9 — Cursor agent skills (optional)
+## Phase 9 — Agent skills (optional)
 
-If you use Cursor agent skills for AI-assisted workflows:
+[`npx skills`](https://skills.sh) installs skills into `~/.agents/skills` (tracked in `~/.agents/.skill-lock.json`). Pi, Claude Code, Cursor, and Codex all pick them up.
 
 ```bash
-npx skills add https://github.com/mohi-devhub/antivibe --skill antivibe
 npx skills add https://github.com/juliusbrussee/caveman --skill caveman
 npx skills add https://github.com/juliusbrussee/caveman --skill caveman-commit
-npx skills add https://github.com/anthropics/skills --skill doc-coauthoring
 npx skills add https://github.com/anthropics/skills --skill frontend-design
 npx skills add https://github.com/vercel-labs/agent-skills --skill web-design-guidelines
 npx skills add https://github.com/mattpocock/skills --skill improve-codebase-architecture
+npx skills add https://github.com/vercel-labs/skills --skill find-skills
+npx skills add https://github.com/typesafe-ai/skills --skill typesafe-ai
+npx skills add https://github.com/pbakaus/impeccable --skill impeccable
+```
+
+Optional extras:
+
+```bash
+npx skills add https://github.com/mohi-devhub/antivibe --skill antivibe
+npx skills add https://github.com/anthropics/skills --skill doc-coauthoring
+```
+
+The `context7-mcp` skill comes with Context7 (Phase 11).
+
+Keep one copy per skill. If a skill also exists as a real directory in `~/.claude/skills` or `~/.cursor/skills`, replace it with a symlink to `~/.agents/skills/<name>` so the copies don't drift:
+
+```bash
+s=impeccable   # repeat per duplicated skill
+for d in ~/.claude/skills ~/.cursor/skills; do
+  [ -d "$d/$s" ] && [ ! -L "$d/$s" ] && rm -rf "$d/$s" && ln -s ~/.agents/skills/$s "$d/$s"
+done
 ```
 
 Browse more at [skills.sh](https://skills.sh).
@@ -831,6 +894,8 @@ Browse more at [skills.sh](https://skills.sh).
 [CodeGraph](https://github.com/colbymchenry/codegraph) is a local-first code knowledge graph that wires into Cursor (and other agents) over MCP. Index stays on your machine; agents use the graph instead of grepping the whole repo on every question.
 
 Requires Cursor (Phase 4). The standalone installer bundles its own runtime — Node is not required.
+
+> Scope: the steps below wire CodeGraph into **Cursor** (and Claude Code via `codegraph install`). Pi doesn't load MCP servers from these configs; see the pi MCP docs if you want it there too.
 
 ### Step 10.1 — Install the CLI
 
@@ -923,6 +988,8 @@ Docs: [codegraph installation](https://colbymchenry.github.io/codegraph/getting-
 [Context7](https://github.com/upstash/context7) pulls up-to-date, version-specific library documentation and code examples into Cursor's context, instead of relying on outdated training data. Setup offers two modes: **MCP** (Cursor calls Context7 tools natively) or **CLI + Skills** (installs a skill that runs `ctx7` commands).
 
 Requires Node.js 18+ (Phase 5) and Cursor (Phase 4).
+
+> Scope: these steps target **Cursor**. Setup also drops a `context7-mcp` skill (it may land in `~/.claude/skills` / `~/.cursor/skills`); keep a single copy in `~/.agents/skills` and symlink the rest (see Phase 9). For other agents, run `npx ctx7 setup --help` for available targets.
 
 ### Step 11.1 — Get an API key (recommended)
 
@@ -1072,9 +1139,12 @@ graft --version
 - [ ] Obsidian opens and a vault loads
 - [ ] Atomic Chat opens and a model can be downloaded (Apple Silicon)
 - [ ] Terax opens and an AI provider is configured (Settings → AI)
-- [ ] pi opens, `/login` works, and `pi list` shows `pi-9router-ext` and `@ferris1225/pi-subagents`
+- [ ] pi opens, `/login` works, and `pi list` shows `pi-9router-ext`, `pi-subagents`, and `pi-typesafe`
 - [ ] `/9router-status` works in pi and shows a connected router when 9router is installed/running
-- [ ] `/subagents-setup` opens in pi and enabled roles load
+- [ ] pi lists the `subagent` tool and builtin agents (ask pi to list subagents)
+- [ ] `/typesafe enable` works (if using TypeSafe)
+- [ ] Local extensions load: `ask_user_question`, `web_fetch`, `browser_*` tools, `alt+s` snippets
+- [ ] `npx skills list` (or `ls ~/.agents/skills`) shows the Phase 9 skills
 - [ ] Zed opens and Cursor/Claude/Codex threads work via ACP (Agent Panel)
 - [ ] CodeGraph MCP shows in Cursor (after `codegraph install` + restart)
 - [ ] Context7 MCP shows in Cursor (after `ctx7 setup --cursor` + restart, if MCP mode)
@@ -1248,13 +1318,14 @@ Phase 1   Homebrew
 Phase 2   Oh My Zsh → plugins → Powerlevel10k → fzf/fd → ~/.zshrc
 Phase 3   Git config → SSH key → gh CLI
 Phase 4   Cursor → Chrome → Postman → Obsidian → Atomic Chat → Terax → Claude Code → Codex CLI → Zed + ACP
-Phase 5   nvm/Node → Bun → pyenv/Python → Go → Rust → pi + pi packages
+Phase 5   nvm/Node → Bun → pyenv/Python → Go → Rust → pi + pi packages → pi settings + extensions
 Phase 6   Colima + Docker
 Phase 7   kubectl → Terraform
 Phase 8   Optional CLI extras
-Phase 9   Optional Cursor skills
+Phase 9   Optional agent skills (npx skills)
 Phase 10  Optional CodeGraph (CLI → install → init per project)
 Phase 11  Optional Context7 (npx ctx7 setup --cursor)
+Phase 12  Optional Graft (npm i -g @nanonets/graft → graft init per project)
 Verify  Run checklist
 ```
 
