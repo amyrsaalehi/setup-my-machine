@@ -15,12 +15,11 @@ Targets **Ubuntu 24.04 LTS** (works on 22.04 LTS too — notes call out the diff
 | Build base        | build-essential, curl, git, common dev headers          |
 | Package managers  | apt (primary), Homebrew for Linux (optional)            |
 | Shell             | zsh, Oh My Zsh, Powerlevel10k, fzf, fd                  |
-| Languages         | Node (nvm), Bun, Python (pyenv), Go, Rust               |
+| Languages         | Node (nvm), Bun, Python (uv), Go, Rust               |
 | Containers        | Docker Engine + Compose plugin (native, no VM)          |
 | DevOps CLI        | git, GitHub CLI, kubectl, Terraform                     |
 | GUI apps          | Cursor, Chrome, Postman, Obsidian, Ollama + Open WebUI, Terax |
 | AI agents         | Claude Code, Codex CLI, pi, Zed (ACP: Cursor/Claude/Codex)  |
-| AI code intel     | CodeGraph (local MCP knowledge graph for agents)        |
 | AI docs           | Context7 (up-to-date library docs for agents)           |
 | AI project tooling | Graft (codebase context graph)                           |
 
@@ -101,7 +100,7 @@ You will configure SSH keys and the `gh` CLI later in Phase 3.
 
 ### Step 0.4 — Build toolchain
 
-Ubuntu's equivalent of Xcode Command Line Tools. Required for native compilation and for building Python versions with pyenv.
+Ubuntu's equivalent of Xcode Command Line Tools. Required for native compilation of dependencies.
 
 ```bash
 sudo apt install -y build-essential curl wget git ca-certificates gnupg \
@@ -251,7 +250,7 @@ plugins=(
 Add language paths (fill in as you install each runtime in Phase 5):
 
 ```bash
-# Local binaries (fd symlink, pipx, codegraph)
+# Local binaries (fd symlink, uv, pipx)
 export PATH="$HOME/.local/bin:$PATH"
 
 # Bun
@@ -265,10 +264,8 @@ export PATH="$PATH:/usr/local/go/bin:$GOPATH/bin"
 # Rust
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-# pyenv (after Python install)
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - zsh)"
+# uv (Python installs; see Step 5.3)
+# PATH above already covers uv's bin directory
 
 # nvm (after Node install — see Step 5.1)
 export NVM_DIR="$HOME/.nvm"
@@ -665,45 +662,36 @@ bun --version
 
 
 
-### Step 5.3 — Python (via pyenv)
+### Step 5.3 — Python (via uv)
 
-pyenv builds Python from source, so install the build dependencies first:
+[uv](https://docs.astral.sh/uv/) installs and manages Python versions as prebuilt binaries, so no build dependencies are needed.
 
 ```bash
-sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
-  libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils \
-  tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-```bash
-curl -fsSL https://pyenv.run | bash
-```
-
-Add the pyenv init lines to `~/.zshrc` (see Step 2.6), then:
+Open a new terminal (or `source ~/.zshrc`), then:
 
 ```bash
-source ~/.zshrc
-pyenv install 3.12.7
-pyenv global 3.12.7
+uv python install 3.12 --default
 ```
 
 **Verify:**
 
 ```bash
 python --version   # Python 3.12.x
-pip --version
+uv --version
 ```
 
 **Useful tools:**
 
 ```bash
-pip install pipx
-pipx ensurepath
-pipx install poetry ruff
+uv tool install ruff
+uv tool install poetry
 ```
 
-> Ubuntu's system Python is used by the OS itself. Never `pip install` into it —
-> that is what pyenv and `pipx` are for.
+> Ubuntu's system Python is used by the OS itself. Never `pip install` into it.
+> Use `uv` for project environments (`uv venv`, `uv add`, `uv run`).
 
 
 
@@ -1034,6 +1022,7 @@ npx skills add https://github.com/juliusbrussee/caveman --skill caveman-commit
 npx skills add https://github.com/anthropics/skills --skill frontend-design
 npx skills add https://github.com/vercel-labs/agent-skills --skill web-design-guidelines
 npx skills add https://github.com/mattpocock/skills --skill improve-codebase-architecture
+npx skills add mattpocock/skills
 npx skills add https://github.com/vercel-labs/skills --skill find-skills
 npx skills add https://github.com/typesafe-ai/skills --skill typesafe-ai
 npx skills add https://github.com/pbakaus/impeccable --skill impeccable
@@ -1046,7 +1035,7 @@ npx skills add https://github.com/mohi-devhub/antivibe --skill antivibe
 npx skills add https://github.com/anthropics/skills --skill doc-coauthoring
 ```
 
-The `context7-mcp` skill comes with Context7 (Phase 11).
+The `context7-mcp` skill comes with Context7 (Phase 10).
 
 Keep one copy per skill. If a skill also exists as a real directory in `~/.claude/skills` or `~/.cursor/skills`, replace it with a symlink to `~/.agents/skills/<name>` so the copies don't drift:
 
@@ -1063,101 +1052,7 @@ Browse more at [skills.sh](https://skills.sh).
 
 
 
-## Phase 10 — CodeGraph (optional)
-
-[CodeGraph](https://github.com/colbymchenry/codegraph) is a local-first code knowledge graph that wires into Cursor (and other agents) over MCP. The index stays on your machine; agents use the graph instead of grepping the whole repo on every question.
-
-Requires Cursor (Phase 4). The standalone installer bundles its own runtime — Node is not required.
-
-> Scope: the steps below wire CodeGraph into **Cursor** (and Claude Code via `codegraph install`). Pi doesn't load MCP servers from these configs; see the pi MCP docs if you want it there too.
-
-### Step 10.1 — Install the CLI
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/colbymchenry/codegraph/main/install.sh | sh
-```
-
-The installer puts `codegraph` in `~/.local/bin`. Open a **new terminal** (or `source ~/.zshrc`) so the command resolves.
-
-If `~/.local/bin` is not on your PATH, add this to `~/.zshrc`:
-
-```bash
-export PATH="$HOME/.local/bin:$PATH"
-```
-
-**Already have Node?** You can use npm instead:
-
-```bash
-npm i -g @colbymchenry/codegraph
-```
-
-**Verify:**
-
-```bash
-codegraph --version
-```
-
-
-
-### Step 10.2 — Wire up your agent(s)
-
-```bash
-codegraph install
-```
-
-This detects installed agents (Cursor, Claude Code, Codex CLI, and others) and writes the CodeGraph MCP config. Choose **global** so it applies to all projects, or **local** for the current repo only.
-
-Non-interactive shortcut (auto-detect agents, global):
-
-```bash
-codegraph install --yes
-```
-
-Or target Cursor explicitly:
-
-```bash
-codegraph install --target=cursor --yes
-```
-
-**Restart Cursor** (fully quit and reopen) so the MCP server loads.
-
-
-
-### Step 10.3 — Initialize each project
-
-Run once per repo you want indexed:
-
-```bash
-cd your-project
-codegraph init
-```
-
-Creates `.codegraph/` and builds the graph. Auto-sync is on by default — the index updates as files change.
-
-**Verify:**
-
-```bash
-codegraph status
-```
-
-
-
-### Step 10.4 — Upgrade / uninstall
-
-```bash
-codegraph upgrade          # update in place
-codegraph upgrade --check  # see if an update is available
-codegraph uninstall        # remove agent configs + CLI
-codegraph uninit           # remove this project's .codegraph/ index only
-```
-
-Docs: [codegraph installation](https://colbymchenry.github.io/codegraph/getting-started/installation/).
-
----
-
-
-
-## Phase 11 — Context7 (optional)
+## Phase 10 — Context7 (optional)
 
 [Context7](https://github.com/upstash/context7) pulls up-to-date, version-specific library documentation and code examples into Cursor's context, instead of relying on outdated training data. Setup offers two modes: **MCP** (Cursor calls Context7 tools natively) or **CLI + Skills** (installs a skill that runs `ctx7` commands).
 
@@ -1226,7 +1121,7 @@ Docs: [Context7 CLI reference](https://context7.com/docs/clients/cli).
 
 
 
-## Phase 12 — Graft (optional)
+## Phase 11 — Graft (optional)
 
 [Graft](https://github.com/trailhq/Graft) builds a codebase context graph, helping coding agents find relevant files and symbols.
 
@@ -1274,7 +1169,7 @@ gh auth status
 # Phase 5 — languages
 node --version && npm --version
 bun --version
-python --version && pip --version
+python --version && uv --version
 go version
 rustc --version && cargo --version
 
@@ -1296,12 +1191,9 @@ pi --version
 pi list
 
 # Phase 10 (optional)
-codegraph --version
-
-# Phase 11 (optional)
 npx ctx7 --version
 
-# Phase 12 (optional)
+# Phase 11 (optional)
 graft --version
 ```
 
@@ -1322,7 +1214,6 @@ graft --version
 - [ ] Local extensions load: `ask_user_question`, `web_fetch`, `browser_*` tools, `alt+s` snippets
 - [ ] `npx skills list` (or `ls ~/.agents/skills`) shows the Phase 9 skills
 - [ ] Zed opens and Cursor/Claude/Codex threads work via ACP (Agent Panel)
-- [ ] CodeGraph MCP shows in Cursor (after `codegraph install` + restart)
 - [ ] Context7 MCP shows in Cursor (after `ctx7 setup --cursor` + restart, if MCP mode)
 - [ ] Graft is installed and initialized in each intended repository
 
@@ -1365,16 +1256,11 @@ Ensure the nvm block is in `~/.zshrc` and run `source ~/.zshrc`. Check:
 ls ~/.nvm/nvm.sh
 ```
 
-### pyenv: BUILD FAILED / missing headers
-
-Install the full build dependency list from Step 5.3, then retry `pyenv install`.
-
-### pyenv: python still shows the system version
+### uv: python still shows system version
 
 ```bash
-pyenv global 3.12.7
-pyenv rehash
-which python   # should be ~/.pyenv/shims/python
+uv python install 3.12 --default
+which python   # should be ~/.local/bin/python
 ```
 
 ### Docker: permission denied on /var/run/docker.sock
@@ -1458,18 +1344,6 @@ If it fails, verify `NINE_ROUTER_BASE_URL` and `NINE_ROUTER_API_KEY`, then open 
 
 Each agent (Claude, Codex, Cursor) owns its own sign-in — re-run `/login` inside that agent's thread. If a registry-installed agent misbehaves, inspect the raw protocol traffic with `dev: open acp logs` from Zed's Command Palette.
 
-### codegraph: command not found
-
-Open a new terminal, or ensure `~/.local/bin` is on your PATH:
-
-```bash
-export PATH="$HOME/.local/bin:$PATH"
-source ~/.zshrc
-codegraph --version
-```
-
-If you installed via npm instead: `npm i -g @colbymchenry/codegraph`.
-
 ### Graft: command not found or stale graph
 
 Open a new shell if npm’s global bin directory is not yet on `PATH`. Inspect it with:
@@ -1504,7 +1378,6 @@ pi update --all              # update pi and installed pi packages
 rustup update
 go install golang.org/x/tools/gopls@latest
 docker system prune -f          # reclaim image/container space
-codegraph upgrade               # if CodeGraph is installed
 npm update -g ctx7              # if Context7 CLI is installed globally
 npm update -g @nanonets/graft   # if Graft is installed
 graft check /path/to/project
@@ -1527,14 +1400,13 @@ Phase 1   apt (built in) → Homebrew for Linux (optional)
 Phase 2   zsh + chsh → Oh My Zsh → plugins → Powerlevel10k → fzf/fd → ~/.zshrc
 Phase 3   Git config → SSH key → gh CLI
 Phase 4   Cursor → Chrome → Postman → Obsidian → Ollama + Open WebUI → Terax → Claude Code → Codex CLI → Zed + ACP
-Phase 5   nvm/Node → Bun → pyenv/Python → Go → Rust → pi + pi packages → pi settings + extensions
+Phase 5   nvm/Node → Bun → uv/Python → Go → Rust → pi + pi packages → pi settings + extensions
 Phase 6   Docker Engine + Compose plugin → docker group
 Phase 7   kubectl → Terraform
 Phase 8   Optional CLI extras
 Phase 9   Optional agent skills (npx skills)
-Phase 10  Optional CodeGraph (CLI → install → init per project)
-Phase 11  Optional Context7 (npx ctx7 setup --cursor)
-Phase 12  Optional Graft (npm i -g @nanonets/graft → graft init per project)
+Phase 10  Optional Context7 (npx ctx7 setup --cursor)
+Phase 11  Optional Graft (npm i -g @nanonets/graft → graft init per project)
 Verify  Run checklist
 ```
 
